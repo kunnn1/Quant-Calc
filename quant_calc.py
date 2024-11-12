@@ -44,17 +44,17 @@ def save_to_csv(data, filename):
     df.to_csv(filename, index=True)
 
 def main():
-    # User inputs
+    # user inputs for stock ticker, risk rate and date ranges 
     tickers = input("Enter stock ticker symbols separated by commas (e.g., AAPL, MSFT, GOOGL): ").split(',')
     tickers = [ticker.strip().upper() for ticker in tickers]  # Clean and capitalize tickers
     start_date = get_valid_input("Enter start date (YYYY-MM-DD): ", str)
     end_date = get_valid_input("Enter end date (YYYY-MM-DD): ", str)
     risk_free_rate = get_valid_input("Enter annual risk-free rate (e.g., 0.02 for 2%): ", float)
 
-    # Fetch stock data
+    # fetch stock data from api
     stock_prices = get_stock_data(tickers, start_date, end_date)
     
-    # Calculate returns and financial metrics
+    # calulate the returns and financial metrics
     returns = calculate_returns(stock_prices)
     metrics = {}
     for ticker in tickers:
@@ -67,23 +67,20 @@ def main():
             'Max Drawdown': max_drawdown
         }
     
-    # Print results
+    # print da results
     for ticker, metric in metrics.items():
         print(f"\nMetrics for {ticker}:")
         for key, value in metric.items():
             print(f"{key}: {value:.4f}")
     
-    # Save results to CSV
+    # save results to csv files for further analysis and stuff
     save_to_csv(metrics, 'financial_metrics.csv')
     print("\nMetrics saved to financial_metrics.csv")
     
-    # Plot cumulative returns
+    # plot cumulative returns for more holistic analysis
     returns.cumsum().plot(figsize=(10, 6))
     plt.title('Cumulative Returns')
     plt.xlabel('Date')
     plt.ylabel('Cumulative Returns')
     plt.legend(tickers)
     plt.show()
-
-if __name__ == "__main__":
-    main()
